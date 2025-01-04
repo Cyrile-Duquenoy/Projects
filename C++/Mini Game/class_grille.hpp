@@ -3,7 +3,14 @@
 #include<cstdlib>
 #include<ctime>
 #include <utility>
+#include"class_point.hpp"
 #include"class_grille.cpp"
+#include"class_element.hpp"
+
+#define VIDE 0
+#define WALL 1
+#define HUMAN 2
+#define ZOMBIE 3
 
 class Grille{
         protected:
@@ -13,35 +20,32 @@ class Grille{
             size_t nb_free_pos_;
 
         public:
-            // Default Constructor
-            Grille(size_t n, size_t m);
+            
+            Grille(size_t n, size_t m); // Default Constructor
+            ~Grille(); // Destructor
+            void print(); // Print Grille
 
-            // Destructor
-            ~Grille();
-
-            // Print Grille
-            void print();
-
-            // Accès en lecture
-            size_t getHauteur(){return N_;};
-            size_t getLargeur(){return M_;};
+            size_t getHauteur() const {return N_;};
+            size_t getLargeur() const {return M_;};
             size_t get_nb_free_pos(){return nb_free_pos_;};
-
-            // Vérifie si une position est libre
-            bool freePos(size_t x, size_t y);
-
-            // Ajouter
+            void less_nb_free_pos(){nb_free_pos_--;};
+            
+            bool freePos(size_t x, size_t y); // Vérifie si une position est libre
             void ajouter_mur(size_t x, size_t y);
             void ajouter_joueur(size_t x, size_t y);
+            Point<size_t> random_free_pos(); //Retourne "aléatoirement" une position libre sous la forme d'un point
 
-            /* Méthodes restantes à implémenter
-        
-            // Retourne "aléatoirement" une position libre
-            std::pair<size_t,size_t> random_free_pos();
+            Zombie transform_to_zombie(Player p){p.human_to_zombie();};
 
-            */
+            // Reste des méthodes à implémenter
+            size_t point_to_nb(Point<size_t > p);
+            void transform_to_zombie(); // Choisis un jooueur au hasard et le transforme en zombie
+            Point<size_t> get_HUMAN_pos(size_t x, size_t y);
+            Point<size_t> get_pos_Human(size_t x, size_t y);
+            bool is_zombie(Player p);
+            bool all_is_zombie();
+
 };
-
 
 
 // Default Constructor
@@ -52,7 +56,7 @@ Grille::Grille(size_t n, size_t m) : N_(n), M_(m){
     for (size_t i = 0; i < N_; i++) {
         G_[i] = new size_t[M_];
         for (size_t j = 0; j < M_; j++) {
-            G_[i][j] = 0;
+            G_[i][j] = VIDE;
         }
     }
 }
@@ -78,7 +82,7 @@ void Grille::print(){
 
 bool Grille::freePos(size_t x, size_t y){
     if (x >= 0 && x < getLargeur() && y >= 0 && y < getHauteur()){
-        if(G_[x][y]==0){
+        if(G_[x][y]==VIDE){
             return true;
         }
         else{
@@ -87,28 +91,39 @@ bool Grille::freePos(size_t x, size_t y){
     }
 }
 
-/*
-std::pair <size_t,size_t> Grille::random_free_pos(){
-    return {0,0};
-}
-*/
-
 void Grille::ajouter_mur(size_t x, size_t y){
     if (x >= 0 && x < getLargeur() && y >= 0 && y < getHauteur() && freePos(x,y)){
-        G_[x-1][y-1] = 1;
+        G_[x-1][y-1] = WALL;
+        less_nb_free_pos();
     }
 }
 
 void Grille::ajouter_joueur(size_t x, size_t y){
     if (x >= 0 && x < getLargeur() && y >= 0 && y < getHauteur() && freePos(x,y)){
-        if(G_[x-1][y-1]==0)
-            G_[x-1][y-1] = 8;
+        if(G_[x-1][y-1]==0){
+            G_[x-1][y-1] = HUMAN;
+            less_nb_free_pos();
+        }
         else
             std::cout<<"Position non autorisée"<<std::endl;
     }
 }
-    
 
-
-
-
+// A FAIRE : Abaisser la complexité plus tard
+Point<size_t> Grille::random_free_pos(){
+    Point<size_t> pos;
+    int count =0;
+    size_t rr=rand()%get_nb_free_pos();
+    for(int i=0;i<getHauteur();i++){
+        for(int j=0;j<getLargeur();j++){
+            if(G_[j][i]==VIDE){
+                count++;
+                if(count==rr){
+                    Point<size_t> pos2(i+1,j+1);
+                    pos=pos2;
+                }
+            }
+        }
+    }
+    return pos;
+}
