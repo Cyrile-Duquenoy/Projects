@@ -4,7 +4,6 @@
 #include<ctime>
 #include <utility>
 #include"class_point.hpp"
-#include"class_grille.cpp"
 #include"class_element.hpp"
 
 #define VIDE 0
