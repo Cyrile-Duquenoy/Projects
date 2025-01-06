@@ -26,7 +26,8 @@ class Point{
         Point<T> operator-(const Point<T>& p) const;
         Point<T>& operator+=(const Point<T>& p);
         Point<T>& operator-=(const Point<T>& p);
-        
+        bool operator==(const Point<T>& p) const;
+
 };
 
 template<typename T>
@@ -58,3 +59,10 @@ Point<T>& Point<T>::operator-=(const Point<T>& p){
     y_ -= p.y_;
     return *this;
 }
+
+// overloading operator ==
+template<typename T>
+bool Point<T>::operator==(const Point<T>& p) const{
+    return (x_ == p.x_) && (y_ == p.y_);
+}
+

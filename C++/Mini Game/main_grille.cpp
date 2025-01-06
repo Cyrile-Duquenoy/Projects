@@ -18,6 +18,9 @@ int main(void){
     Point<size_t> rr;
     rr=G.random_free_pos();
     rr.print();
+    
+    rr=G.get_pos(1,1);
+    rr.print();
 
     return 0;
 }

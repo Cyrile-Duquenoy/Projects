@@ -4,7 +4,7 @@
 #include<ctime>
 #include <utility>
 #include"class_point.hpp"
-#include"class_element.hpp"
+#include "class_player.hpp"
 
 #define VIDE 0
 #define WALL 1
@@ -33,17 +33,9 @@ class Grille{
             void ajouter_mur(size_t x, size_t y);
             void ajouter_joueur(size_t x, size_t y);
             Point<size_t> random_free_pos(); //Retourne "aléatoirement" une position libre sous la forme d'un point
-
-            Zombie transform_to_zombie(Player p){p.human_to_zombie();};
-
-            // Reste des méthodes à implémenter
-            size_t point_to_nb(Point<size_t > p);
-            void transform_to_zombie(); // Choisis un jooueur au hasard et le transforme en zombie
-            Point<size_t> get_HUMAN_pos(size_t x, size_t y);
-            Point<size_t> get_pos_Human(size_t x, size_t y);
-            bool is_zombie(Player p);
-            bool all_is_zombie();
-
+            void transform_to_zombie(Player p); // Choisis un jooueur au hasard et le transforme en zombie
+            Point<size_t> get_pos(size_t x, size_t y){return Point<size_t> (x,y);}; // A ameliorer
+            
 };
 
 
@@ -111,10 +103,10 @@ void Grille::ajouter_joueur(size_t x, size_t y){
 // A FAIRE : Abaisser la complexité plus tard
 Point<size_t> Grille::random_free_pos(){
     Point<size_t> pos;
-    int count =0;
+    size_t count =0;
     size_t rr=rand()%get_nb_free_pos();
-    for(int i=0;i<getHauteur();i++){
-        for(int j=0;j<getLargeur();j++){
+    for(size_t i=0;i<getHauteur();i++){
+        for(size_t j=0;j<getLargeur();j++){
             if(G_[j][i]==VIDE){
                 count++;
                 if(count==rr){
@@ -125,4 +117,9 @@ Point<size_t> Grille::random_free_pos(){
         }
     }
     return pos;
+}
+
+void Grille::transform_to_zombie(Player p){
+    p.transform_to_zombie();
+    G_[p.get_pos().get_x()][p.get_pos().get_y()]=ZOMBIE;
 }
