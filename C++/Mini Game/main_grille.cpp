@@ -15,7 +15,7 @@ int main(void){
     G.ajouter_joueur(1,1);
     G.print();
 
-    Point<size_t> rr;
+    Point<int> rr;
     rr=G.random_free_pos();
     rr.print();
     

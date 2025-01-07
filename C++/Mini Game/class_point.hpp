@@ -20,6 +20,8 @@ class Point{
 
         T get_x(){return x_;};
         T get_y(){return y_;};
+        void set_x(T x){x_=x;}
+        void set_y(T y){y_=y;}
 
         // Overloading Operators
         Point<T> operator+(const Point<T>& p) const;
@@ -27,6 +29,7 @@ class Point{
         Point<T>& operator+=(const Point<T>& p);
         Point<T>& operator-=(const Point<T>& p);
         bool operator==(const Point<T>& p) const;
+        Point<T> operator=(const Point<T>& p);
 
 };
 
@@ -64,5 +67,13 @@ Point<T>& Point<T>::operator-=(const Point<T>& p){
 template<typename T>
 bool Point<T>::operator==(const Point<T>& p) const{
     return (x_ == p.x_) && (y_ == p.y_);
+}
+
+// Overloading operator =
+template<typename T>
+Point<T> Point<T>::operator=(const Point<T>& p){
+    x_ = p.x_;
+    y_ = p.y_;
+    return *this;
 }
 
